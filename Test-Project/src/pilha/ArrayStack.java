@@ -14,23 +14,23 @@ public class ArrayStack <InputValue> implements Stack<InputValue> {
     protected int capacity;
     protected InputValue S[];
     protected int top = -1;
-    protected NString RA;
-    protected String nomeAluno;
-    protected String address;
-    protected BirthDate date;
+    protected static NString RA;
+    protected static String nomeAluno;
+    protected static String address;
+    protected static BirthDate date;
 
 
     public ArrayStack(NString registroAluno, String nome, String endereco, BirthDate data) {
         capacity = 100;
         
-        NString RA = registroAluno;
-        String nomeAluno = nome;
-        String address = endereco;
-        BirthDate date = data;
+        this.RA = registroAluno;
+        this.nomeAluno = nome;
+        this.address = endereco;
+        this.date = data;
     }
 
-    public NString getRA() {
-        return RA;
+    public String getRA() {
+        return RA.toString();
     }
 
     public String getNome() {
@@ -41,8 +41,9 @@ public class ArrayStack <InputValue> implements Stack<InputValue> {
         return address;
     }
 
-    public BirthDate getDate() {
-        return date;
+    public String getDate() {
+        String formatedString = date.JSONformat();
+        return formatedString;
     }
 
 

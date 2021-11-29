@@ -4,6 +4,8 @@ import exception.InvalidBirthDateException;
 
 public class BirthDate {
 
+    private static String firstString;
+
     public BirthDate(String paramString) throws InvalidBirthDateException {
 
 
@@ -17,7 +19,29 @@ public class BirthDate {
             }
             
 
+
+
         }
+
+        firstString = paramString;
+
+    }
+
+    public String toString() {
+        return firstString;
+    }
+
+    public String JSONformat() {
+
+        StringBuffer jsonString = new StringBuffer(firstString);
+
+        for (int i = 0; i < firstString.length(); i++) {
+            if(firstString.charAt(i) == '/') {
+                jsonString.setCharAt(i, '-');
+            }
+        }
+
+        return jsonString.toString();
     }
     
 }

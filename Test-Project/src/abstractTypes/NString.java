@@ -6,7 +6,8 @@ import exception.NStringDigitException;
 
 public class NString {      //numberString
 
-    private String nome;
+    private static String originalString;
+    private static NString numberString;
     
     public NString (String str) throws NStringDigitException {
 
@@ -20,25 +21,16 @@ public class NString {      //numberString
             
         }
 
-        setNome(str);
+        this.originalString = originalString;
 
 
+        originalString = str;
         
+    }    
 
-        
-
-        
+    public String toString() {
+        return originalString;
     }
-
-    
-    public String setNome(String param) {
-        return nome = param;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-    
 
 
 
