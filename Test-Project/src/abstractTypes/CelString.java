@@ -1,10 +1,12 @@
 package abstractTypes;
 
+import javax.swing.text.html.HTMLDocument.RunElement;
+
 import exception.InvalidPhoneNumberException;
 
 public class CelString {
 
-    
+    String sourceString;
 
     public CelString(String paramString) throws InvalidPhoneNumberException {
 
@@ -17,8 +19,14 @@ public class CelString {
         }
 
 
+        sourceString = paramString;
 
 
+
+    }
+
+    public String toString() {
+        return sourceString;
     }
 
 

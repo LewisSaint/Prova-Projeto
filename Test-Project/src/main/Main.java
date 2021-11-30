@@ -4,7 +4,8 @@ import abstractTypes.*;
 import exception.InvalidBirthDateException;
 import exception.InvalidPhoneNumberException;
 import exception.NStringDigitException;
-
+import mapa.HashTableMap;
+import mapa.HashTableMap.HashEntry;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -16,14 +17,19 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.Time;
+import java.text.ParseException;
 import java.util.Iterator;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
+
+
 
 public class Main {
 
     public static void main(String[] args) throws InterruptedException {
         System.out.println("Bem-vindo ao programa!!");
+        
         userInterface();
     }
 
@@ -69,6 +75,9 @@ public class Main {
 
     public static void consulta() throws InterruptedException {
 
+        
+        int option = 1;
+
         File file = new File("data.json");
         if (file.length() == 0) {
             System.out.println("Ops, não há nenhum dado em minha base. Por favor, volte ao menu principal, selecione a opção de mudança e crie uma pilha nova.");
@@ -82,60 +91,166 @@ public class Main {
         System.out.println("Você Entrou no modo de consulta a base de dados.");
         System.out.println("Se deseja consultar pela chave padrão de RA, digite '1'. Caso contrário, digite '2' para selecionar uma chave específica desejada");
 
-        int scanUser = scanConsulta.nextInt();
+        option = scanConsulta.nextInt();
 
 
-        if (scanUser == 1) {
+        if (option == 1) {
             consultaRA();
         }
 
-        else if(scanUser == 2) {
+        else if(option == 2) {
             consultaChave();
         }
 
+        else if (option < 1 || option > 2) {
+            System.out.println("Opção inválida. Por favor, tente novamente!");
+            consulta();
+        }
+
     }
 
 
-    public static void consultaRA() {
-
+    public static void consultaRA() throws InterruptedException {
+       
         Scanner scanConsultaRA = new Scanner(System.in);
         System.out.println("Digite o RA do aluno desejado: ");
         String ra = scanConsultaRA.nextLine();
+        
+        
 
-        JSONParser parser = new JSONParser();
-
+        
+        HashTableMap<String, String> mapa = new HashTableMap<String, String>();
+    
         try {
-            Object obj = parser.parse(new FileReader("data.json"));
-            JSONObject jsonObject = (JSONObject) obj;
- 
-			// A JSON array. JSONObject supports java.util.List interface.
-			JSONArray companyList = (JSONArray) jsonObject.get(ra);
- 
-			// An iterator over a collection. Iterator takes the place of Enumeration in the Java Collections Framework.
-			// Iterators differ from enumerations in two ways:
-			// 1. Iterators allow the caller to remove elements from the underlying collection during the iteration with well-defined semantics.
-			// 2. Method names have been improved.
-			Iterator<JSONObject> iterator = companyList.iterator();
-			while (iterator.hasNext()) {
-				System.out.println(iterator.next());
+            JSONParser parser = new JSONParser();
+            JSONArray a = (JSONArray) parser.parse(new FileReader("data.json"));
+            for (Object o : a) {
+                JSONObject getKey = (JSONObject) o;
+                
+               
+
+
+                String keyString = (String) getKey.get("RA");
+                mapa.put("RA", keyString);
+                String nomeString = (String) getKey.get("Nome");
+                mapa.put("Nome", nomeString);
+                String enderecoString = (String) getKey.get("Endereço");
+                mapa.put("Endereço", enderecoString);
+                String dataString = (String) getKey.get("Data de Nascimento");
+                mapa.put("Data de Nascimento", dataString);
+                String celphoneString = (String) getKey.get("Celular");
+                mapa.put("Celular", celphoneString);
+
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        catch (Exception e) {e.printStackTrace();}
+
+        if (mapa.get("RA").toString().equals(ra) == false) {
+            System.out.println("Diferentes!");
+            TimeUnit.SECONDS.sleep(1);
+            consultaRA();
+        }
+
         
-}
+
+
+       
+        System.out.println("Tudo que tenho do aluno com RA " + ra + " é:");
+        System.out.println(mapa.entrySet());
+        System.out.println("Redirecionando ao menu de consulta...");
+        TimeUnit.SECONDS.sleep(1);
+        consulta();
+       
+    }
     
+
+
+    public static void consultaChave() throws InterruptedException {
+        int option = 1;
+
+        Scanner scanRA = new Scanner(System.in);
+        System.out.println("Você entrou no modo de consulta de chave específica.");
+        System.out.println("Digite o número de RA o qual deseja buscar: ");
         
+        String ra = scanRA.nextLine();
         
+        HashTableMap<String, String> mapa = new HashTableMap<String, String>();
+       
+        try {
+            JSONParser parser = new JSONParser();
+            JSONArray a = (JSONArray) parser.parse(new FileReader("data.json"));
+
+            for (Object o : a) {
+                
+                JSONObject getKey = (JSONObject) o;
+                String keyString = (String) getKey.get("RA");
+                mapa.put("RA", keyString);
+                String nomeString = (String) getKey.get("Nome");
+                mapa.put("Nome", nomeString);
+                String enderecoString = (String) getKey.get("Endereço");
+                mapa.put("Endereço", enderecoString);
+                String dataString = (String) getKey.get("Data de Nascimento");
+                mapa.put("Data de Nascimento", dataString);
+                String celphoneString = (String) getKey.get("Celular");
+                mapa.put("Celular", celphoneString);
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
-    
+
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Para consulta de Endereço, digite '1'.");
+        System.out.println("Para consulta de número de celular, digite '2'.");
+        System.out.println("Para consulta de nome, digite '3'.");
+        System.out.println("Para consulta de data de nascimento, digite '4'.");
+        option = scanner.nextInt();
+
+        if (option < 1 || option > 4) {
+            System.out.println("Opção inválida, por favor, tente novamente.");
+            TimeUnit.SECONDS.sleep(1);
+            consultaChave();
+        }
+
+        String userOption = null;
+
+        switch (option) {
+            case 1:
+                userOption = "Endereço";
+                break;
+        
+            case 2:
+                userOption = "Celular";
+                break;
+            
+            case 3:
+                userOption = "Nome";
+                break;
+
+            case 4:
+                userOption = "Data de Nascimento";
+                break;
+
+            default:
+                break;
+        }
 
 
+        if (mapa.get("RA").toString().equals(ra) == false) {
+            System.out.println("Diferentes!");
+            TimeUnit.SECONDS.sleep(1);
+            consultaRA();
+        }
 
-    public static void consultaChave() {
+        System.out.println(userOption + "do aluno cadastrado no RA " + ra + " é: "+ mapa.get(userOption));
 
     }
+
 
 
 
@@ -238,32 +353,39 @@ public class Main {
             String birthDateScan = scanBirthDate.nextLine();
             BirthDate dataAluno = new BirthDate(birthDateScan);
 
-            ArrayStack pilhaUsuario = new ArrayStack(registroDeAluno, nomeAluno, endereco, dataAluno);
+            ArrayStack pilhaUsuario = new ArrayStack(registroDeAluno, nomeAluno, endereco, dataAluno, nCelular);
 
             //Debug
             System.out.println("RA: " + pilhaUsuario.getRA());
             System.out.println("Nome: " + pilhaUsuario.getNome());
             System.out.println("Endereco: "+ pilhaUsuario.getAddress());
             System.out.println("Data: " + pilhaUsuario.getDate());
+            System.out.println("Celular: " + pilhaUsuario.getCelular());
 
             JSONObject atributos = new JSONObject();
             atributos.put("RA", pilhaUsuario.getRA());
             atributos.put("Nome", pilhaUsuario.getNome());
             atributos.put("Endereço", pilhaUsuario.getAddress());
             atributos.put("Data de Nascimento", pilhaUsuario.getDate());
+            atributos.put("Celular", pilhaUsuario.getCelular());
 
             JSONArray listaUsuario = new JSONArray();
             listaUsuario.add(atributos);
 
-            
-
-
             try {
+
                 FileWriter file = new FileWriter("data.json", true);
+
+                
+                
+                
+                
                 file.append(listaUsuario.toJSONString());
-                file.append("\n");
                 file.flush();
-                file.close(); 
+
+
+                
+
             } catch (IOException e) {
                 e.printStackTrace();
             }

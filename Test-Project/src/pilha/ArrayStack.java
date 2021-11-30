@@ -6,6 +6,7 @@ import exception.*;
 
 
 import abstractTypes.BirthDate;
+import abstractTypes.CelString;
 import abstractTypes.NString;
 
 
@@ -18,15 +19,17 @@ public class ArrayStack <InputValue> implements Stack<InputValue> {
     protected static String nomeAluno;
     protected static String address;
     protected static BirthDate date;
+    protected static CelString celphone;
 
 
-    public ArrayStack(NString registroAluno, String nome, String endereco, BirthDate data) {
+    public ArrayStack(NString registroAluno, String nome, String endereco, BirthDate data, CelString celular) {
         capacity = 100;
         
         this.RA = registroAluno;
         this.nomeAluno = nome;
         this.address = endereco;
         this.date = data;
+        this.celphone = celular;
     }
 
     public String getRA() {
@@ -44,6 +47,10 @@ public class ArrayStack <InputValue> implements Stack<InputValue> {
     public String getDate() {
         String formatedString = date.JSONformat();
         return formatedString;
+    }
+
+    public String getCelular() {
+        return celphone.toString();
     }
 
 
